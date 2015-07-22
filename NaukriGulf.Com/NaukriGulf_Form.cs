@@ -122,7 +122,7 @@ namespace NaukriGulf.Com
                     // declare Initialize all variables to nothing
                     var job_title = "";
                     var job_company = "";
-                    var job_desc = "Job Description";
+                    var job_desc = "";
 
                     var job_location = "";
                     var job_region = "";
