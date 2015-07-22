@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Text.RegularExpressions;
+
+/*
+Require dependencies
+Name:	ChromeDriver
+ID:	WebDriver.ChromeDriver.win32
+URL:	https://www.nuget.org/packages/WebDriver.ChromeDriver.win32/2.14.0
+
+Name:	Selenium
+ID:	Selenium.WebDriver
+URL:	https://www.nuget.org/packages/Selenium.WebDriver/2.45.0
+*/
+
+/*well I am including over here */
+using OpenQA.Selenium;
+/* Chrome will do Perfect Job so adding it. :) */
+using OpenQA.Selenium.Chrome;
+/* Some File Writing */
+using System.IO;
+/* Xpath Lib */
+using System.Xml.XPath;
+
+
+/*
+Project Home URL: http://www.naukrigulf.com/
+Project Prececc URL: http://www.naukrigulf.com/jobs-in-uae-7
+*/
+
+
+namespace NaukriGulf.Com
+{
+    public partial class NaukriGulf_Form : Form
+    {
+        string defautl_Url = "http://www.naukrigulf.com/jobs-in-uae-7";
+
+        private void NaukriGulf_Function(string defautl_Url) {
+
+            /* initializing chrome driver */
+            var chrome_Driver = ChromeDriverService.CreateDefaultService();
+            //no need to show disturbing command window so set it hidden
+            chrome_Driver.HideCommandPromptWindow = true;
+
+            chrome_Driver.Start();
+            //initialize chrome driver 
+            var main_page_chrome_Driver_Obj = new ChromeDriver(chrome_Driver, new ChromeOptions());
+            main_page_chrome_Driver_Obj.Navigate().GoToUrl(defautl_Url);
+            var main_page_dom = main_page_chrome_Driver_Obj.FindElementsByXPath("/html/body/div[3]/div[3]/form/div[@id='resultsData']");
+            var main_pages_count = main_page_dom[0].FindElement(By.XPath(".//div[1]/div[2]/strong[2]")).Text;
+            //wola ! I need only digits, but it has " 15302 Advertisements ", extract only digits
+            var str_main_pages_count = Regex.Match(main_pages_count, @"\d+").Value;
+            //It needs to be converted to iNT
+            int int_main_pages_count = Int32.Parse(str_main_pages_count);
+
+            var main_page_jobs = main_page_chrome_Driver_Obj.FindElementsByXPath("//*[@class='artical']");
+            result_richTextBox.AppendText(main_page_jobs.Count().ToString());
+
+
+
+
+            //dispose all the data associated with chromedriver
+            main_page_chrome_Driver_Obj.Dispose();
+            //Quit chrome driver
+            main_page_chrome_Driver_Obj.Quit();
+
+        
+        } //end NaukriGulf_Function
+        public NaukriGulf_Form()
+        {
+            InitializeComponent();
+        }
+
+        private void start_btn_Click(object sender, EventArgs e)
+        {
+            NaukriGulf_Function(defautl_Url);
+        }
+    }
+}
